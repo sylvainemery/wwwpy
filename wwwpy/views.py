@@ -1,9 +1,9 @@
-from flask import redirect, render_template, request, session, url_for, g, flash
+from flask import redirect, render_template, request, session, url_for, g, flash, send_from_directory, abort
 from wwwpy import app, login_manager, db
 from forms import LoginForm
 from models import User
 from flask.ext.login import (LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required)
-
+import os
 
 @login_manager.user_loader
 def load_user(id):
@@ -42,7 +42,18 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/me')
+@app.route('/user/<nickname>')
 @login_required
-def my_account():
-	return render_template('useraccount.html')
+def my_account(nickname):
+	if nickname == current_user.nickname:
+		return render_template('useraccount.html')
+	else:
+		abort(403)
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'img/favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.errorhandler(403)
+def not_authorized(e):
+    return render_template('403.html'), 403
