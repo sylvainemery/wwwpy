@@ -1,6 +1,6 @@
 from flask import redirect, render_template, request, session, url_for, g, flash, send_from_directory, abort
 from wwwpy import app, login_manager, db
-from forms import LoginForm
+from forms import LoginForm, NewAccountForm
 from models import User
 from flask.ext.login import (LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required)
 import os
@@ -26,7 +26,7 @@ def login():
     login_form = LoginForm()
 
     if login_form.validate_on_submit():
-    	user = User.query.filter_by(nickname = login_form.name.data).first()
+    	user = User.query.filter_by(email = login_form.email.data).first()
     	if user is None:
     		flash('login inconnu')
     	else:
@@ -34,6 +34,19 @@ def login():
     		return redirect(request.args.get("next") or url_for("index"))
     
     return render_template('login.html', form = login_form)
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+	newaccount_form = NewAccountForm()
+
+	if newaccount_form.validate_on_submit():
+		newuser = User(newaccount_form.nickname.data, newaccount_form.email.data, newaccount_form.password.data)
+		db.session.add(newuser)
+		db.session.commit()
+		login_user(newuser)
+		return redirect(url_for('my_account', nickname = newuser.nickname))
+	else:
+		return render_template('signup.html', form = newaccount_form)
 
 
 @app.route('/logout')
