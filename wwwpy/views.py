@@ -1,7 +1,7 @@
 from flask import redirect, render_template, request, session, url_for, g, flash, send_from_directory, abort
 from wwwpy import app, login_manager, db
-from forms import LoginForm, NewAccountForm
-from models import User
+from forms import LoginForm, NewAccountForm, NewTreeForm
+from models import User, ChristmasTree
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required, user_logged_in
 import os
 from datetime import datetime
@@ -74,6 +74,25 @@ def my_account(nickname):
 		return render_template('useraccount.html')
 	else:
 		abort(403)
+
+@app.route('/newtree', methods=['GET', 'POST'])
+@login_required
+def newtree():
+	newtree_form = NewTreeForm()
+
+	if newtree_form.validate_on_submit():
+		ntree = ChristmasTree(newtree_form.name.data, current_user.id)
+		db.session.add(ntree)
+		db.session.commit()
+		return redirect(url_for('tree', nickname = current_user.nickname, treename = ntree.name))
+	else:
+		return render_template('newtree.html', form = newtree_form)
+
+@app.route('/user/<nickname>/tree/<treename>')
+@login_required
+def tree(nickname, treename):
+	return render_template('tree.html', treename = treename)
+
 
 @app.route('/favicon.ico')
 def favicon():

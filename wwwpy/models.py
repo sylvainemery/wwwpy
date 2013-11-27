@@ -8,6 +8,7 @@ class User(db.Model):
     pwdhash = db.Column(db.String(160))
     last_login = db.Column(db.DateTime)
     last_last_login = db.Column(db.DateTime)
+    trees = db.relationship('ChristmasTree', backref = 'creator', lazy = 'dynamic')
 
     def __init__(self, nickname, email, password):
         self.nickname = nickname
@@ -35,3 +36,15 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
+
+class ChristmasTree(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(64))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __init__(self, name, user_id):
+        self.name = name
+        self.user_id = user_id
+
+    def __repr__(self):
+        return '<Tree %r>' % (self.name)
