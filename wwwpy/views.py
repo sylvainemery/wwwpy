@@ -21,6 +21,7 @@ def index():
     return render_template('index.html')
 
 def handle_login(app, user):
+	g.user.last_last_login = g.user.last_login
 	g.user.last_login = datetime.utcnow()
 	db.session.add(g.user)
 	db.session.commit()

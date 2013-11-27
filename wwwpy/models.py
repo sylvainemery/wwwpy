@@ -7,6 +7,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique = True)
     pwdhash = db.Column(db.String(160))
     last_login = db.Column(db.DateTime)
+    last_last_login = db.Column(db.DateTime)
 
     def __init__(self, nickname, email, password):
         self.nickname = nickname
