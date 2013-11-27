@@ -20,7 +20,7 @@ class LoginForm(Form):
 class NewAccountForm(Form):
 	nickname = TextField("Nickname", validators=[validators.InputRequired(), validators.Length(min=4, max=64)])
 	email = TextField("Email", validators=[validators.Email(), validators.InputRequired(), validators.Length(min=5, max=120)])
-	password = PasswordField("Password", validators=[validators.InputRequired()])
+	password = PasswordField("Password", validators=[validators.InputRequired(), validators.Length(min=4)])
 	submit = SubmitField("Create account")
 
 	def validate(self):
