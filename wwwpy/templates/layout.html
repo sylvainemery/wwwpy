@@ -1,12 +1,14 @@
-<!doctype html>
-<html>
-<head>
-	<title>wwwpy</title>
-</head>
-<body>
-<div id="userloginblock">
-	{% include "parts/userloginblock.html" %}
+{% extends "bootstrap/base.html" %}
+{% block title %}wwwpy{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-default navbar-static-top">
+{% include "parts/userloginblock.html" %}
 </div>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
 
 {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -17,6 +19,3 @@
     </ul>
   {% endif %}
 {% endwith %}
-{% block body %}{% endblock %}
-</body>
-</html>
