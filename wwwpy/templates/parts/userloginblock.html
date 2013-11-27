@@ -1,0 +1,6 @@
+{% if g.user.is_authenticated() %}
+Logged in as <a href='{{url_for('my_account', nickname = current_user.nickname)}}'>{{current_user.nickname}}</a>, <a href="{{url_for('logout')}}">logout</a>
+{% else %}
+You are not logged in, <a href="{{url_for('login')}}">login</a><br>
+or <a href="{{url_for('signup')}}">create</a> an account.
+{% endif %}
