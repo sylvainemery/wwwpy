@@ -2,6 +2,7 @@
 
 {% block body %}
 <div>
-	hello {{current_user.nickname}}
+	hello {{current_user.nickname}}<br>
+	{% if current_user.last_login %}<p><i>Last login on: {{current_user.last_login}}</i></p>{% endif %}
 </div>
 {% endblock %}

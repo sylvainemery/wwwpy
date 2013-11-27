@@ -2,8 +2,11 @@ from flask import redirect, render_template, request, session, url_for, g, flash
 from wwwpy import app, login_manager, db
 from forms import LoginForm, NewAccountForm
 from models import User
-from flask.ext.login import (LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required)
+from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required, user_logged_in
 import os
+from datetime import datetime
+
+
 
 @login_manager.user_loader
 def load_user(id):
@@ -17,6 +20,12 @@ def before_request():
 def index():
     return render_template('index.html')
 
+def handle_login(app, user):
+	g.user.last_login = datetime.utcnow()
+	db.session.add(g.user)
+	db.session.commit()
+
+user_logged_in.connect(handle_login)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -31,6 +40,8 @@ def login():
     		flash('login inconnu')
     	else:
     		login_user(user)
+	        
+
     		return redirect(request.args.get("next") or url_for("index"))
     
     return render_template('login.html', form = login_form)
