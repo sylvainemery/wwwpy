@@ -3,6 +3,10 @@
 {% block body %}
 <div>
 	hello {{current_user.nickname}}<br>
-	{% if current_user.last_last_login %}<p><i>Last login on: {{current_user.last_last_login}}</i></p>{% endif %}
+	{% if current_user.last_last_login %}
+	<p><i>Last login on: {{current_user.last_last_login}}</i></p>
+	{% else %}
+	<p><i>You're new ! Welcome !</i></p>
+	{% endif %}
 </div>
 {% endblock %}
