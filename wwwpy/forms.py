@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, SubmitField, PasswordField, validators
+from wtforms import TextField, SubmitField, PasswordField, TextAreaField, validators
 from wwwpy.models import User, ChristmasTree
 from flask.ext.login import current_user
 
@@ -35,7 +35,8 @@ class NewAccountForm(Form):
 			return True
 
 class NewTreeForm(Form):
-	name = TextField("Tree name", validators = [validators.InputRequired(), validators.Length(min = 1, max = 64)])
+	name = TextField("Name", validators = [validators.InputRequired(), validators.Length(min = 1, max = 64)])
+	description = TextAreaField("Description", validators = [validators.Length(max = 255)])
 	submit = SubmitField("Create tree")
 
 	def validate(self):

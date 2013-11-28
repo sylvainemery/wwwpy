@@ -76,7 +76,7 @@ def newtree():
 	newtree_form = NewTreeForm()
 
 	if newtree_form.validate_on_submit():
-		ntree = ChristmasTree(newtree_form.name.data, current_user.id)
+		ntree = ChristmasTree(newtree_form.name.data, newtree_form.description.data, current_user.id)
 		db.session.add(ntree)
 		db.session.commit()
 		return redirect(url_for('tree', nickname = current_user.nickname, treename = ntree.name))
@@ -86,7 +86,11 @@ def newtree():
 @app.route('/user/<nickname>/tree/<treename>')
 @login_required
 def tree(nickname, treename):
-	return render_template('tree.html', treename = treename)
+	if nickname == current_user.nickname:
+		t = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = treename).first()
+		return render_template('tree.html', tree = t)
+	else:
+		abort(403)
 
 
 @app.route('/favicon.ico')
