@@ -1,25 +1,38 @@
 {% extends "layout.html" %}
 
-{% block content %}
-<div>
-	hello {{current_user.nickname}}<br>
-	{% if current_user.last_last_login %}
-	<p><i>Last login on: {{current_user.last_last_login}}</i></p>
-	{% else %}
-	<p><i>You're new ! Welcome !</i></p>
-	{% endif %}
-
-	{% if current_user.trees.count() > 0 %}
-	ohhh, you got {{current_user.trees.count()}} tree{% if current_user.trees.count() > 1 %}s{% endif %}:
-	<ul>
-		{% for tree in current_user.trees %}
-			<li><a href="{{url_for('tree', nickname = current_user.nickname, treename = tree.name)}}">{{tree.name}}</a></li>
-		{% endfor %}
-	</ul>
-	{% else %}
-	ain't got no trees
-	{% endif %}
-	<br><br><a href="{{url_for('newtree')}}">create new tree</a><br>
-
+{% block content -%}
+{{ super() }}
+<div class="container">
+	<div class="row">
+		<div class="col-md-4">
+			<h1>hello {{current_user.nickname}}</h1>
+			<p><em>
+				{% if current_user.last_last_login -%}
+				Last login on: {{current_user.last_last_login}}
+				{%- else %}
+				You're new ! Welcome !
+				{%- endif %}
+			</em></p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			{%- if current_user.trees.count() > 0 %}
+			ohhh, you got {{current_user.trees.count()}} tree{% if current_user.trees.count() > 1 %}s{% endif %}:
+			<ul>
+				{%- for tree in current_user.trees %}
+					<li><a href="{{url_for('tree', nickname = current_user.nickname, treename = tree.name)}}">{{tree.name}}</a></li>
+				{%- endfor %}
+			</ul>
+			{%- else %}
+			ain't got no trees
+			{%- endif %}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<a href="{{url_for('newtree')}}">create new tree</a>
+		</div>
+	</div>
 </div>
-{% endblock %}
+{%- endblock content %}

@@ -1,6 +1,8 @@
-{% if g.user.is_authenticated() %}
-Logged in as <a href='{{url_for('my_account', nickname = current_user.nickname)}}'>{{current_user.nickname}}</a>, <a href="{{url_for('logout')}}">logout</a>
+<div class="navbar-right">
+<p class="navbar-text">{%- if g.user.is_authenticated() %}
+Logged in as <a href='{{url_for('my_account', nickname = current_user.nickname)}}' class="navbar-link">{{current_user.nickname}}</a>, <a href="{{url_for('logout')}}" class="navbar-link">logout</a>
 {% else %}
-You are not logged in, <a href="{{url_for('login')}}">login</a><br>
-or <a href="{{url_for('signup')}}">create</a> an account.
-{% endif %}
+You are not logged in, <a href="{{url_for('login')}}" class="navbar-link">login</a><br>
+or <a href="{{url_for('signup')}}" class="navbar-link">create</a> an account.
+{% endif -%}</p>
+</div>

@@ -3,5 +3,12 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<p>{{treename}}</p>
-{% endblock %}
+{{ super() }}
+<div class="container">
+	<div class="row">
+		<div class="col-md-4">
+	{{treename}}
+		</div>
+	</div>
+</div>
+{% endblock content %}

@@ -30,22 +30,17 @@ user_logged_in.connect(handle_login)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
+	if g.user is not None and g.user.is_authenticated():
+		return redirect(url_for('index'))
 
-    login_form = LoginForm()
+	login_form = LoginForm()
 
-    if login_form.validate_on_submit():
-    	user = User.query.filter_by(email = login_form.email.data).first()
-    	if user is None:
-    		flash('login inconnu')
-    	else:
-    		login_user(user)
-	        
-
-    		return redirect(request.args.get("next") or url_for("index"))
-    
-    return render_template('login.html', form = login_form)
+	if login_form.validate_on_submit():
+		user = User.query.filter_by(email = login_form.email.data).first()
+		login_user(user)
+		return redirect(request.args.get("next") or url_for("index"))
+	else:
+		return render_template('login.html', form = login_form)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
