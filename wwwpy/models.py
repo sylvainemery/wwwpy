@@ -41,11 +41,13 @@ class ChristmasTree(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     description = db.Column(db.String(255))
+    code_name = db.Column(db.String(100))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, name, description, user_id):
+    def __init__(self, name, description, code_name, user_id):
         self.name = name
         self.description = description
+        self.code_name = code_name
         self.user_id = user_id
 
     def __repr__(self):

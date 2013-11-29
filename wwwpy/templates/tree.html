@@ -9,8 +9,13 @@
 		<div class="col-md-4">
 			<h1>
 				<p>{{tree.name}}</p>
-				<small>{{tree.description}}</small>
+				{% if tree.description != None %}<small>{{tree.description}}</small> {% endif %}
 			</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<p>{{tree.code_name}}</p>
 		</div>
 	</div>
 </div>

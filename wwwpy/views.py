@@ -1,11 +1,12 @@
 from flask import redirect, render_template, request, session, url_for, g, flash, send_from_directory, abort
 from wwwpy import app, login_manager, db
+from settings import adjectives, nouns
 from forms import LoginForm, NewAccountForm, NewTreeForm
 from models import User, ChristmasTree
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required, user_logged_in
 import os
 from datetime import datetime
-
+from random import choice
 
 
 @login_manager.user_loader
@@ -76,7 +77,8 @@ def newtree():
 	newtree_form = NewTreeForm()
 
 	if newtree_form.validate_on_submit():
-		ntree = ChristmasTree(newtree_form.name.data, newtree_form.description.data, current_user.id)
+		code_name = get_code_name()
+		ntree = ChristmasTree(newtree_form.name.data, newtree_form.description.data, code_name, current_user.id)
 		db.session.add(ntree)
 		db.session.commit()
 		return redirect(url_for('tree', nickname = current_user.nickname, treename = ntree.name))
@@ -100,3 +102,7 @@ def favicon():
 @app.errorhandler(403)
 def not_authorized(e):
     return render_template('403.html'), 403
+
+
+def get_code_name():
+	return choice(adjectives) + ' ' + choice(nouns)
