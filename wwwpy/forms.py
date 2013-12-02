@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, SubmitField, PasswordField, TextAreaField, validators
+from wtforms import TextField, SubmitField, PasswordField, TextAreaField, HiddenField, validators
 from wwwpy.models import User, ChristmasTree
 from flask.ext.login import current_user
 
@@ -45,6 +45,22 @@ class NewTreeForm(Form):
 
 		tree = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = self.name.data).first()
 		if tree:
+			self.name.errors.append("you've already created a tree with this name")
+		else:
+			return True
+
+class EditTreeForm(Form):
+	name = TextField("Name", validators = [validators.InputRequired(), validators.Length(min = 1, max = 64)])
+	description = TextAreaField("Description", validators = [validators.Length(max = 255)])
+	id = HiddenField("id")
+	submit = SubmitField("Modify tree")
+
+	def validate(self):
+		if not Form.validate(self):
+			return False
+
+		tree = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = self.name.data).first()
+		if tree and str(tree.id) <> self.id.data:
 			self.name.errors.append("you've already created a tree with this name")
 		else:
 			return True

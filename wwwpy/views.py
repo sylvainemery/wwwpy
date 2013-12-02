@@ -1,7 +1,7 @@
 from flask import redirect, render_template, request, session, url_for, g, flash, send_from_directory, abort
 from wwwpy import app, login_manager, db
 from settings import adjectives, nouns
-from forms import LoginForm, NewAccountForm, NewTreeForm
+from forms import LoginForm, NewAccountForm, NewTreeForm, EditTreeForm
 from models import User, ChristmasTree
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required, user_logged_in
 import os
@@ -66,10 +66,10 @@ def logout():
 @app.route('/user/<nickname>')
 @login_required
 def my_account(nickname):
-	if nickname == current_user.nickname:
-		return render_template('useraccount.html')
-	else:
+	if nickname <> current_user.nickname:
 		abort(403)
+	return render_template('useraccount.html')
+
 
 @app.route('/newtree', methods=['GET', 'POST'])
 @login_required
@@ -85,14 +85,39 @@ def newtree():
 	else:
 		return render_template('newtree.html', form = newtree_form)
 
+
 @app.route('/user/<nickname>/tree/<treename>')
 @login_required
 def tree(nickname, treename):
-	if nickname == current_user.nickname:
-		t = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = treename).first()
-		return render_template('tree.html', tree = t)
-	else:
+	if nickname <> current_user.nickname:
 		abort(403)
+
+	t = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = treename).first()
+	if t is None:
+		abort(404)
+
+	return render_template('tree.html', tree = t)
+
+
+@app.route('/user/<nickname>/tree/<treename>/edit', methods=['GET', 'POST'])
+@login_required
+def edittree(nickname, treename):
+	if nickname <> current_user.nickname:
+		abort(403)
+
+	t = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = treename).first()
+	if t is None:
+		abort(404)
+
+	edittree_form = EditTreeForm(obj = t)
+
+	if edittree_form.validate_on_submit():
+		edittree_form.populate_obj(t)
+		db.session.add(t)
+		db.session.commit()
+		return redirect(url_for('tree', nickname = current_user.nickname, treename = t.name))
+
+	return render_template('edittree.html', form = edittree_form, tree = t)
 
 
 @app.route('/favicon.ico')
