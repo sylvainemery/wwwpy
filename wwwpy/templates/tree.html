@@ -23,8 +23,8 @@
 			{%- if tree.subscribed_users.count() > 0 %}
 			ohhh, this tree has {{tree.subscribed_users.count()}} user{% if tree.subscribed_users.count() > 1 %}s{% endif %} subscribed:
 			<ul>
-				{%- for ut in tree.subscribed_users %}
-					<li>{{ut.subscriber.nickname}}</li>
+				{%- for user in tree.subscribed_users %}
+					<li>{{user.nickname}}</li>
 				{%- endfor %}
 			</ul>
 			{%- else %}

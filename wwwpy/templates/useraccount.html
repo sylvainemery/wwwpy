@@ -40,7 +40,7 @@
 			ohhh, you have subscribed to {{current_user.subscribed_trees.count()}} tree{% if current_user.subscribed_trees.count() > 1 %}s{% endif %}:
 			<ul>
 				{%- for tree in current_user.subscribed_trees %}
-					<li><a href="{{url_for('tree', nickname = tree.christmas_tree.owner.nickname, treename = tree.christmas_tree.name)}}">{{tree.christmas_tree.name}}</a></li>
+					<li><a href="{{url_for('tree', nickname = tree.owner.nickname, treename = tree.name)}}">{{tree.name}}</a></li>
 				{%- endfor %}
 			</ul>
 			{%- else %}

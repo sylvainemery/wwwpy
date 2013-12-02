@@ -2,7 +2,7 @@ from flask import redirect, render_template, request, session, url_for, g, flash
 from wwwpy import app, login_manager, db
 from settings import adjectives, nouns
 from forms import LoginForm, NewAccountForm, NewTreeForm, EditTreeForm, NewSubsTreeForm
-from models import User, ChristmasTree, UserTrees
+from models import User, ChristmasTree, user_trees
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required, user_logged_in
 import os
 from datetime import datetime
@@ -93,9 +93,7 @@ def subscribetotree():
 
 	if substree_form.validate_on_submit():
 		t = ChristmasTree.query.filter_by(code_name = substree_form.code_name.data).first()
-		nsubstree = UserTrees(user_id = current_user.id, tree_id = t.id, date_joined = datetime.utcnow())
-		db.session.add(nsubstree)
-		db.session.commit()
+		current_user.subscribe_to_tree(t)
 		return redirect(url_for('my_account', nickname = current_user.nickname))
 	else:
 		return render_template('substree.html', form = substree_form)
