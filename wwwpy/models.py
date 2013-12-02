@@ -8,7 +8,8 @@ class User(db.Model):
     pwdhash = db.Column(db.String(160))
     last_login = db.Column(db.DateTime)
     last_last_login = db.Column(db.DateTime)
-    trees = db.relationship('ChristmasTree', backref = 'creator', lazy = 'dynamic')
+    owned_trees = db.relationship('ChristmasTree', backref = 'creator', lazy = 'dynamic')
+    #subscribed_trees = db.relationship('UserTrees', backref = 'subscribed', lazy = 'dynamic')
 
     def __init__(self, nickname, email, password):
         self.nickname = nickname
@@ -42,13 +43,19 @@ class ChristmasTree(db.Model):
     name = db.Column(db.String(64))
     description = db.Column(db.String(255))
     code_name = db.Column(db.String(100))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, name, description, code_name, user_id):
+    def __init__(self, name, description, code_name, owner_id):
         self.name = name
         self.description = description
         self.code_name = code_name
-        self.user_id = user_id
+        self.owner_id = owner_id
 
     def __repr__(self):
         return '<Tree %r>' % (self.name)
+
+#class UserTrees(db.Model):
+#    id = db.Column(db.Integer, primary_key = True)
+#    user_id = db.Column(db.Integer, db.ForeignKey('User.id'))
+#    tree_id = db.Column(db.Integer, db.ForeignKey('ChristmasTree.id'))
+#    date_joined = db.Column(db.DateTime)

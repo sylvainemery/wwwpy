@@ -17,10 +17,10 @@
 	</div>
 	<div class="row">
 		<div class="col-md-4">
-			{%- if current_user.trees.count() > 0 %}
-			ohhh, you got {{current_user.trees.count()}} tree{% if current_user.trees.count() > 1 %}s{% endif %}:
+			{%- if current_user.owned_trees.count() > 0 %}
+			ohhh, you got {{current_user.owned_trees.count()}} tree{% if current_user.owned_trees.count() > 1 %}s{% endif %}:
 			<ul>
-				{%- for tree in current_user.trees %}
+				{%- for tree in current_user.owned_trees %}
 					<li><a href="{{url_for('tree', nickname = current_user.nickname, treename = tree.name)}}">{{tree.name}}</a></li>
 				{%- endfor %}
 			</ul>

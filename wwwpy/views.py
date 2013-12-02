@@ -92,7 +92,7 @@ def tree(nickname, treename):
 	if nickname <> current_user.nickname:
 		abort(403)
 
-	t = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = treename).first()
+	t = ChristmasTree.query.filter_by(owner_id = current_user.id).filter_by(name = treename).first()
 	if t is None:
 		abort(404)
 
@@ -105,7 +105,7 @@ def edittree(nickname, treename):
 	if nickname <> current_user.nickname:
 		abort(403)
 
-	t = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = treename).first()
+	t = ChristmasTree.query.filter_by(owner_id = current_user.id).filter_by(name = treename).first()
 	if t is None:
 		abort(404)
 

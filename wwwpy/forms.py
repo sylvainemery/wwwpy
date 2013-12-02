@@ -43,7 +43,7 @@ class NewTreeForm(Form):
 		if not Form.validate(self):
 			return False
 
-		tree = ChristmasTree.query.filter_by(user_id = current_user.id).filter_by(name = self.name.data).first()
+		tree = ChristmasTree.query.filter_by(owner_id = current_user.id).filter_by(name = self.name.data).first()
 		if tree:
 			self.name.errors.append("you've already created a tree with this name")
 		else:
