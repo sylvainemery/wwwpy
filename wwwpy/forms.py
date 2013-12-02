@@ -64,3 +64,22 @@ class EditTreeForm(Form):
 			self.name.errors.append("you've already created a tree with this name")
 		else:
 			return True
+
+class NewSubsTreeForm(Form):
+	code_name = TextField("Code Name", validators = [validators.InputRequired(), validators.Length(min = 1, max = 100)])
+	submit = SubmitField("Subscribe to tree")
+
+	def validate(self):
+		if not Form.validate(self):
+			return False
+
+		tree = ChristmasTree.query.filter_by(code_name = self.code_name.data).first()
+		if tree is None:
+			self.code_name.errors.append("ain't no tree with this name")
+		else:
+			if tree.owner_id == current_user.id:
+				self.code_name.errors.append("you can't subscribe to your own tree")
+			else:
+##TODO : add tree already subscribed by user
+				return True
+

@@ -1,8 +1,8 @@
 from flask import redirect, render_template, request, session, url_for, g, flash, send_from_directory, abort
 from wwwpy import app, login_manager, db
 from settings import adjectives, nouns
-from forms import LoginForm, NewAccountForm, NewTreeForm, EditTreeForm
-from models import User, ChristmasTree
+from forms import LoginForm, NewAccountForm, NewTreeForm, EditTreeForm, NewSubsTreeForm
+from models import User, ChristmasTree, UserTrees
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required, user_logged_in
 import os
 from datetime import datetime
@@ -86,6 +86,21 @@ def newtree():
 		return render_template('newtree.html', form = newtree_form)
 
 
+@app.route('/subscribetotree', methods=['GET', 'POST'])
+@login_required
+def subscribetotree():
+	substree_form = NewSubsTreeForm()
+
+	if substree_form.validate_on_submit():
+		t = ChristmasTree.query.filter_by(code_name = substree_form.code_name.data).first()
+		nsubstree = UserTrees(user_id = current_user.id, tree_id = t.id, date_joined = datetime.utcnow())
+		db.session.add(nsubstree)
+		db.session.commit()
+		return redirect(url_for('my_account', nickname = current_user.nickname))
+	else:
+		return render_template('substree.html', form = substree_form)
+
+
 @app.route('/user/<nickname>/tree/<treename>')
 @login_required
 def tree(nickname, treename):
@@ -130,4 +145,4 @@ def not_authorized(e):
 
 
 def get_code_name():
-	return choice(adjectives) + ' ' + choice(nouns)
+	return choice(adjectives).strip() + ' ' + choice(nouns).strip()

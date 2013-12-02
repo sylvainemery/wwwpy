@@ -18,5 +18,19 @@
 			<p>{{tree.code_name}}</p>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-md-4">
+			{%- if tree.subscribed_users.count() > 0 %}
+			ohhh, this tree has {{tree.subscribed_users.count()}} user{% if tree.subscribed_users.count() > 1 %}s{% endif %} subscribed:
+			<ul>
+				{%- for ut in tree.subscribed_users %}
+					<li>{{ut.subscriber.nickname}}</li>
+				{%- endfor %}
+			</ul>
+			{%- else %}
+			nobody subscribed to tree :-(
+			{%- endif %}
+		</div>
+	</div>
 </div>
 {% endblock content %}
