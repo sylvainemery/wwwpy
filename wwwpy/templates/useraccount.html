@@ -8,7 +8,7 @@
 			<h1>hello {{current_user.nickname}}</h1>
 			<p><em>
 				{% if current_user.last_last_login -%}
-				Last login on: {{current_user.last_last_login}}
+				Last login on: {{current_user.last_last_login.strftime('%Y-%m-%d %H:%M:%S')}}
 				{%- else %}
 				You're new ! Welcome !
 				{%- endif %}
