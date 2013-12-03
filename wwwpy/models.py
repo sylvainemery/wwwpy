@@ -42,6 +42,17 @@ class User(db.Model):
         self.subscribed_trees.append(tree)
         db.session.commit()
 
+    def get_all_trees(self):
+        all_trees = []
+        for tree in self.owned_trees:
+            tree.owned = True
+            all_trees.append(tree)
+        for tree in self.subscribed_trees:
+            tree.owned = False
+            all_trees.append(tree)
+
+        return all_trees
+
 
 class ChristmasTree(db.Model):
     id = db.Column(db.Integer, primary_key = True)
