@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col-md-4">
 			<h1>
-				<p>{{tree.name}} <small><a href="{{url_for('edittree', nickname = current_user.nickname, treename = tree.name)}}">Edit</a></small></p>
+				<p>{{tree.name}}{% if is_owner %} <small><a href="{{url_for('edittree', nickname = tree.owner.nickname, treename = tree.name)}}">Edit</a></small>{% endif %}</p>
 				{% if tree.description != None %}<small>{{tree.description}}</small> {% endif %}
 			</h1>
 		</div>
@@ -20,15 +20,20 @@
 	</div>
 	<div class="row">
 		<div class="col-md-4">
+			<div class="panel panel-default">
 			{%- if tree.subscribed_users.count() > 0 %}
-			ohhh, this tree has {{tree.subscribed_users.count()}} user{% if tree.subscribed_users.count() > 1 %}s{% endif %} subscribed:
-			<ul>
+			<div class="panel-body">
+				ohhh, this tree has {{tree.subscribed_users.count()}} user{% if tree.subscribed_users.count() > 1 %}s{% endif %} subscribed:
+			</div>
+			<ul class="list-group">
 				{%- for user in tree.subscribed_users %}
-					<li>{{user.nickname}}</li>
+					<li class="list-group-item">{{user.nickname}}{% if user.nickname == current_user.nickname %} <span class="label label-primary">You</span>{% endif %}</li>
 				{%- endfor %}
 			</ul>
 			{%- else %}
-			nobody subscribed to tree :-(
+			<div class="panel-body">
+				nobody subscribed to tree :-(
+			</div>
 			{%- endif %}
 		</div>
 	</div>

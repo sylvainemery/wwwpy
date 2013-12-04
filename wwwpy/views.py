@@ -102,14 +102,22 @@ def subscribetotree():
 @app.route('/user/<nickname>/tree/<treename>')
 @login_required
 def tree(nickname, treename):
-	if nickname <> current_user.nickname:
-		abort(403)
-
-	t = ChristmasTree.query.filter_by(owner_id = current_user.id).filter_by(name = treename).first()
+	t = db.session.query(ChristmasTree).filter(ChristmasTree.owner.has(nickname = nickname)).filter(ChristmasTree.name == treename).first()
 	if t is None:
 		abort(404)
 
-	return render_template('tree.html', tree = t)
+	is_owner = False
+	if t.owner.id == current_user.id:
+		is_owner = True
+
+	is_subscriber = False
+	if current_user in t.subscribed_users:
+		is_subscriber = True
+
+	if not is_owner and not is_subscriber:
+		abort(403)
+
+	return render_template('tree.html', tree = t, is_owner = is_owner)
 
 
 @app.route('/user/<nickname>/tree/<treename>/edit', methods=['GET', 'POST'])
