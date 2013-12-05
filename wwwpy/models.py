@@ -85,4 +85,4 @@ class UserTreeSubscriptions(db.Model):
     def __init__(self, tree=None, **kwargs):
         super(UserTreeSubscriptions, self).__init__(**kwargs)
         self.tree = tree
-        self.date_joined = datetime.utcnow() #ca me plait pas que ce ne soit que là
+        self.date_joined = datetime.utcnow() #ca me plait pas que ce ne soit que la
