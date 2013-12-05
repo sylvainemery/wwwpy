@@ -2,7 +2,7 @@ from flask import redirect, render_template, request, session, url_for, g, flash
 from wwwpy import app, login_manager, db
 from settings import adjectives, nouns
 from forms import LoginForm, NewAccountForm, NewTreeForm, EditTreeForm, NewSubsTreeForm
-from models import User, ChristmasTree, user_trees
+from models import User, ChristmasTree
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required, user_logged_in
 import os
 from datetime import datetime
@@ -111,10 +111,8 @@ def tree(nickname, treename):
 		is_owner = True
 
 	is_subscriber = False
-	for subscription in t.subscribed_users:	
-		if current_user == subscription.user:
-			is_subscriber = True
-			break
+	if current_user in t.users:
+		is_subscriber = True
 
 	if not is_owner and not is_subscriber:
 		abort(403)
