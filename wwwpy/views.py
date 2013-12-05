@@ -111,8 +111,10 @@ def tree(nickname, treename):
 		is_owner = True
 
 	is_subscriber = False
-	if current_user in t.subscribed_users:
-		is_subscriber = True
+	for subscription in t.subscribed_users:	
+		if current_user == subscription.user:
+			is_subscriber = True
+			break
 
 	if not is_owner and not is_subscriber:
 		abort(403)

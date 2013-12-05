@@ -21,13 +21,13 @@
 	<div class="row">
 		<div class="col-md-4">
 			<div class="panel panel-default">
-			{%- if tree.subscribed_users.count() > 0 %}
+			{%- if tree.subscribed_users|length > 0 %}
 			<div class="panel-body">
-				ohhh, this tree has {{tree.subscribed_users.count()}} user{% if tree.subscribed_users.count() > 1 %}s{% endif %} subscribed:
+				ohhh, this tree has {{tree.subscribed_users|length}} user{% if tree.subscribed_users|length > 1 %}s{% endif %} subscribed:
 			</div>
 			<ul class="list-group">
-				{%- for user in tree.subscribed_users %}
-					<li class="list-group-item">{{user.nickname}}{% if user.nickname == current_user.nickname %} <span class="label label-primary">You</span>{% endif %}</li>
+				{%- for subscription in tree.subscribed_users %}
+					<li class="list-group-item">{{subscription.user.nickname}}{% if subscription.user.nickname == current_user.nickname %} <span class="label label-primary">You</span>{% endif %}</li>
 				{%- endfor %}
 			</ul>
 			{%- else %}

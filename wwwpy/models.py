@@ -9,7 +9,8 @@ class User(db.Model):
     last_login = db.Column(db.DateTime)
     last_last_login = db.Column(db.DateTime)
     owned_trees = db.relationship('ChristmasTree', backref = 'owner', lazy = 'dynamic')
-    subscribed_trees = db.relationship('ChristmasTree', secondary='user_trees', backref = db.backref('subscriber', lazy = 'dynamic'), lazy = 'dynamic')
+    #subscribed_trees = db.relationship('ChristmasTree', secondary='user_trees', backref = db.backref('subscriber', lazy = 'dynamic'), lazy = 'dynamic')
+    subscribed_trees = db.relationship('UserTreeSubscriptions', backref = 'user')
 
     def __init__(self, nickname, email, password):
         self.nickname = nickname
@@ -39,7 +40,7 @@ class User(db.Model):
         return '<User %r>' % (self.nickname)
 
     def subscribe_to_tree(self, tree):
-        self.subscribed_trees.append(tree)
+        self.subscribed_trees.append(UserTreeSubscriptions(tree_id = tree.id))
         db.session.commit()
 
     def get_all_trees(self):
@@ -47,7 +48,8 @@ class User(db.Model):
         for tree in self.owned_trees:
             tree.owned = True
             all_trees.append(tree)
-        for tree in self.subscribed_trees:
+        for subs in self.subscribed_trees:
+            tree = subs.tree
             tree.owned = False
             all_trees.append(tree)
 
@@ -60,7 +62,7 @@ class ChristmasTree(db.Model):
     description = db.Column(db.String(255))
     code_name = db.Column(db.String(100))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    subscribed_users = db.relationship('User', secondary='user_trees', backref = db.backref('christmas_tree', lazy = 'dynamic'), lazy = 'dynamic')
+   # subscribed_users = db.relationship('User', secondary='user_trees', backref = db.backref('christmas_tree', lazy = 'dynamic'), lazy = 'dynamic')
 
     def __init__(self, name, description, code_name, owner_id):
         self.name = name
@@ -77,3 +79,9 @@ user_trees = db.Table('user_trees',
     db.Column('tree_id', db.Integer, db.ForeignKey('christmas_tree.id')),
     db.Column('date_joined', db.DateTime)
 )
+
+class UserTreeSubscriptions(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+    tree_id = db.Column(db.Integer, db.ForeignKey('christmas_tree.id'), primary_key = True)
+    date_joined = db.Column(db.DateTime)
+    tree = db.relationship('ChristmasTree', backref='subscribed_users')
