@@ -45,7 +45,8 @@ class User(db.Model):
         self.subscribed_trees.append(tree)
         db.session.commit()
 
-    def get_all_trees(self):
+    @property
+    def all_trees(self):
         all_trees = []
         for tree in self.owned_trees:
             tree.owned = True

@@ -19,12 +19,12 @@
 	<div class="row">
 		<div class="col-md-4">
 			<div class="panel panel-default">
-				{%- if current_user.get_all_trees()|length > 0 %}
+				{%- if current_user.all_trees|length > 0 %}
 				<div class="panel-body">
-					ohhh, you participate in {{current_user.get_all_trees()|length}} tree{% if current_user.get_all_trees()|length > 1 %}s{% endif %}:
+					ohhh, you participate in {{current_user.all_trees|length}} tree{% if current_user.all_trees|length > 1 %}s{% endif %}:
 				</div>
 				<ul class="list-group">
-					{%- for tree in current_user.get_all_trees() %}
+					{%- for tree in current_user.all_trees %}
 						<li class="list-group-item"><a href="{{url_for('tree', nickname = tree.owner.nickname, treename = tree.name)}}">{{tree.name}}</a>{% if tree.owned %} <span class="label label-primary">Owner</span>{% endif %}</li>
 					{%- endfor %}
 				</ul>
