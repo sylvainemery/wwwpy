@@ -26,8 +26,8 @@
 				ohhh, this tree has {{tree.users|length}} user{% if tree.users|length > 1 %}s{% endif %} subscribed:
 			</div>
 			<ul class="list-group">
-				{%- for su in tree.subs_users %}
-					<li class="list-group-item">{{su.user.nickname}}{% if su.user.nickname == current_user.nickname %} <span class="label label-primary">You</span> {% if su.hint %} hint: {{su.hint}}{% else %}<a href="{{url_for('treehint', nickname = tree.owner.nickname, treename = tree.name)}}">no hint</a>{% endif %}{% endif %} {{su.date_joined.strftime('%Y-%m-%d %H:%M:%S')}}</li>
+				{%- for su in tree.subs_users|sort(attribute = 'user.nickname') %}
+					<li class="list-group-item">{{su.user.nickname}}{% if su.user.nickname == current_user.nickname %} <span class="label label-primary">You</span> {% if su.hint %} <a href="{{url_for('treehint', nickname = tree.owner.nickname, treename = tree.name)}}">hint</a>: {{su.hint}}{% else %}<a href="{{url_for('treehint', nickname = tree.owner.nickname, treename = tree.name)}}">no hint</a>{% endif %}{% endif %} {{su.date_joined.strftime('%Y-%m-%d %H:%M:%S')}}</li>
 				{%- endfor %}
 			</ul>
 			{%- else %}

@@ -60,7 +60,7 @@ class User(db.Model):
                 t.no_hint = True
             all_trees.append(t)
 
-        return sorted(set(all_trees), key=lambda tree: tree.name)
+        return sorted(set(all_trees), key=lambda tree: tree.fullname)
 
 
 class ChristmasTree(db.Model):
