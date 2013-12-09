@@ -77,11 +77,8 @@ class NewSubsTreeForm(Form):
 		if tree is None:
 			self.code_name.errors.append("ain't no tree with this name")
 		else:
-			if tree.owner_id == current_user.id:
-				self.code_name.errors.append("you can't subscribe to your own tree")
+			if current_user in tree.users:
+				self.code_name.errors.append("you have already subscribed to this tree")
 			else:
-				if current_user in tree.users:
-					self.code_name.errors.append("you have already subscribed to this tree")
-				else:
-					return True
+				return True
 

@@ -79,6 +79,7 @@ def newtree():
 	if newtree_form.validate_on_submit():
 		code_name = get_code_name()
 		ntree = ChristmasTree(newtree_form.name.data, newtree_form.description.data, code_name, current_user.id)
+		current_user.subscribe_to_tree(ntree)
 		db.session.add(ntree)
 		db.session.commit()
 		return redirect(url_for('tree', nickname = current_user.nickname, treename = ntree.name))

@@ -56,7 +56,7 @@ class User(db.Model):
             tree.owned = False
             all_trees.append(tree)
 
-        return all_trees
+        return sorted(set(all_trees), key=lambda tree: tree.name)
 
 
 class ChristmasTree(db.Model):
