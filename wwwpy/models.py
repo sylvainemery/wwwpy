@@ -14,7 +14,8 @@ class User(db.Model):
     owned_trees = db.relationship('ChristmasTree', backref = 'owner', lazy = 'dynamic')
     subscribed_trees = association_proxy('subs_trees', 'tree')
 
-    def __init__(self, nickname, email, password):
+    def __init__(self, nickname, email, password, **kwargs):
+        super(User, self).__init__(**kwargs)
         self.nickname = nickname
         self.email = email.lower()
         self.set_password(password)
@@ -66,7 +67,8 @@ class ChristmasTree(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     users = association_proxy('subs_users', 'user')
 
-    def __init__(self, name, description, code_name, owner_id):
+    def __init__(self, name, description, code_name, owner_id, **kwargs):
+        super(ChristmasTree, self).__init__(**kwargs)
         self.name = name
         self.description = description
         self.code_name = code_name
@@ -87,3 +89,6 @@ class UserTreeSubscriptions(db.Model):
         super(UserTreeSubscriptions, self).__init__(**kwargs)
         self.tree = tree
         self.date_joined = datetime.utcnow() #ca me plait pas que ce ne soit que la
+
+    def __repr__(self):
+        return '<Tree %r, User %r>' % (self.tree.name, self.user.name)
