@@ -137,7 +137,7 @@ def treehint(nickname, treename):
 		db.session.commit()
 		return redirect(url_for('tree', nickname = nickname, treename = treename))
 
-	return render_template('treehint.html', form = treehint_form)
+	return render_template('treehint.html', form = treehint_form, nickname = nickname, treename = treename)
 
 
 @app.route('/user/<nickname>/tree/<treename>/edit', methods=['GET', 'POST'])
