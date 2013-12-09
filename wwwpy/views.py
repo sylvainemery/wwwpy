@@ -1,8 +1,8 @@
 from flask import redirect, render_template, request, session, url_for, g, flash, send_from_directory, abort
 from wwwpy import app, login_manager, db
 from settings import adjectives, nouns
-from forms import LoginForm, NewAccountForm, NewTreeForm, EditTreeForm, NewSubsTreeForm
-from models import User, ChristmasTree
+from forms import LoginForm, NewAccountForm, NewTreeForm, EditTreeForm, NewSubsTreeForm, TreeHintForm
+from models import User, ChristmasTree, UserTreeSubscriptions
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, confirm_login, fresh_login_required, user_logged_in
 import os
 from datetime import datetime
@@ -119,6 +119,25 @@ def tree(nickname, treename):
 		abort(403)
 
 	return render_template('tree.html', tree = t, is_owner = is_owner)
+
+
+@app.route('/user/<nickname>/tree/<treename>/hint', methods=['GET', 'POST'])
+@login_required
+def treehint(nickname, treename):
+	u = db.session.query(User).filter(User.nickname == nickname).first() #todo : supprimer cet acces bdd qui me semble de trop, mais on ne peut pas aller chercher UST.tre.owner.nickname == nickname dans le filter
+	uts = db.session.query(UserTreeSubscriptions).filter(UserTreeSubscriptions.user_id == current_user.id).filter(UserTreeSubscriptions.tree.has(owner = u)).filter(UserTreeSubscriptions.tree.has(name = treename)).first()
+	if uts is None:
+		abort(404)
+
+	treehint_form = TreeHintForm(obj = uts)
+
+	if treehint_form.validate_on_submit():
+		treehint_form.populate_obj(uts)
+		db.session.add(uts)
+		db.session.commit()
+		return redirect(url_for('tree', nickname = nickname, treename = treename))
+
+	return render_template('treehint.html', form = treehint_form)
 
 
 @app.route('/user/<nickname>/tree/<treename>/edit', methods=['GET', 'POST'])

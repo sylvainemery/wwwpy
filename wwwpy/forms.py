@@ -82,3 +82,13 @@ class NewSubsTreeForm(Form):
 			else:
 				return True
 
+class TreeHintForm(Form):
+	hint = TextField("Hint", validators = [validators.InputRequired(), validators.Length(min = 1, max = 255)])
+	submit = SubmitField("Validate this hint")
+
+	def validate(self):
+		if not Form.validate(self):
+			return False
+
+		return True
+

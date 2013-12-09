@@ -1,5 +1,6 @@
 from wwwpy import db
 from werkzeug import generate_password_hash, check_password_hash
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.associationproxy import association_proxy
 from datetime import datetime
 
@@ -49,12 +50,15 @@ class User(db.Model):
     @property
     def all_trees(self):
         all_trees = []
-        for tree in self.subscribed_trees:
-            tree.owned = False
-            all_trees.append(tree)
-        for tree in self.owned_trees:
-            tree.owned = True
-            all_trees.append(tree)
+        for s in self.subs_trees:
+            t = s.tree
+            t.owned = False
+            if t.owner_id == self.id:
+                t.owned = True
+            t.no_hint = False
+            if s.hint is None:
+                t.no_hint = True
+            all_trees.append(t)
 
         return sorted(set(all_trees), key=lambda tree: tree.name)
 
@@ -75,13 +79,18 @@ class ChristmasTree(db.Model):
         self.owner_id = owner_id
 
     def __repr__(self):
-        return '<Tree %r>' % (self.name)
+        return '<Tree %r\%r>' % (self.owner.nickname, self.name)
+
+    @hybrid_property
+    def fullname(self):
+        return self.owner.nickname + '\\' + self.name
 
 
 class UserTreeSubscriptions(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
     tree_id = db.Column(db.Integer, db.ForeignKey('christmas_tree.id'), primary_key = True)
     date_joined = db.Column(db.DateTime)
+    hint = db.Column(db.String(255))
     user = db.relationship('User', backref='subs_trees')
     tree = db.relationship('ChristmasTree', backref='subs_users')
 
@@ -91,4 +100,4 @@ class UserTreeSubscriptions(db.Model):
         self.date_joined = datetime.utcnow() #ca me plait pas que ce ne soit que la
 
     def __repr__(self):
-        return '<Tree %r, User %r>' % (self.tree.name, self.user.name)
+        return '<Tree %r, User %r, hint %r>' % (self.tree.name, self.user.nickname, self.hint)
