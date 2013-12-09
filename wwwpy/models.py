@@ -49,11 +49,11 @@ class User(db.Model):
     @property
     def all_trees(self):
         all_trees = []
-        for tree in self.owned_trees:
-            tree.owned = True
-            all_trees.append(tree)
         for tree in self.subscribed_trees:
             tree.owned = False
+            all_trees.append(tree)
+        for tree in self.owned_trees:
+            tree.owned = True
             all_trees.append(tree)
 
         return sorted(set(all_trees), key=lambda tree: tree.name)
