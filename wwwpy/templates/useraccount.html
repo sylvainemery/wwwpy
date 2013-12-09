@@ -25,7 +25,7 @@
 				</div>
 				<ul class="list-group">
 					{%- for tree in current_user.all_trees %}
-						<li class="list-group-item"><a href="{{url_for('tree', nickname = tree.owner.nickname, treename = tree.name)}}">{{tree.name}}</a>{% if tree.owner.nickname == current_user.nickname %} <span class="label label-primary">Owner</span>{% endif %}</li>
+						<li class="list-group-item"><a href="{{url_for('tree', nickname = tree.owner.nickname, treename = tree.name)}}">{{tree.name}}</a>{% if tree.owned %} <span class="label label-primary">Owner</span>{% endif %}</li>
 					{%- endfor %}
 				</ul>
 				{%- else %}
