@@ -126,7 +126,7 @@ def edittree(nickname, treename):
 	if nickname <> current_user.nickname:
 		abort(403)
 
-	t = ChristmasTree.query.filter_by(owner_id = current_user.id).filter_by(name = treename).first()
+	t = db.session.query(ChristmasTree).filter(ChristmasTree.owner.has(nickname = nickname)).filter(ChristmasTree.name == treename).first()
 	if t is None:
 		abort(404)
 
